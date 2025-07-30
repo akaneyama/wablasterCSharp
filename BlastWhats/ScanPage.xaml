@@ -1,0 +1,56 @@
+﻿<Page x:Class="BlastWhats.ScanPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:BlastWhats"
+      mc:Ignorable="d" 
+      d:DesignHeight="500" d:DesignWidth="800"
+      Title="ScanPage"
+      Background="Transparent">
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,20">
+            <Button x:Name="BtnStartServer" Content="Pilih &amp; Mulai Server" 
+                    Click="BtnStartServer_Click" Margin="10,0,0,0" Style="{StaticResource MenuButtonStyle}" 
+                    Width="180"/>
+            <Button x:Name="BtnStopServer" Content="Hentikan Server" 
+                    Click="BtnStopServer_Click" Style="{StaticResource MenuButtonStyle}" 
+                    Width="180" Margin="10,0,0,0" Background="#E74C3C"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <TextBlock Text="Pindai QR Code WhatsApp" 
+                       FontSize="24" FontWeight="Bold" 
+                       TextAlignment="Center" Foreground="#333333" 
+                       Margin="0,0,0,20"/>
+
+            <Border BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" Background="White"
+                    Width="320" Height="320">
+                <Border.Effect>
+                    <DropShadowEffect ShadowDepth="2" Color="#CCCCCC" Opacity="0.4" BlurRadius="10"/>
+                </Border.Effect>
+
+                <Grid>
+                    <TextBlock Text="Menunggu QR..." 
+                               HorizontalAlignment="Center" VerticalAlignment="Center" 
+                               FontSize="18" Foreground="#AAAAAA"/>
+                    <Image x:Name="QrCodeImage" Width="300" Height="300" 
+                           Stretch="Uniform"/>
+                </Grid>
+            </Border>
+        </StackPanel>
+
+        <TextBlock Grid.Row="2" x:Name="StatusText" 
+                   Text="Server belum aktif." 
+                   TextWrapping="Wrap" TextAlignment="Center" 
+                   Margin="0,20,0,10" FontSize="16" FontWeight="SemiBold" 
+                   Foreground="#555555" VerticalAlignment="Bottom"/>
+    </Grid>
+</Page>
