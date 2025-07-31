@@ -149,6 +149,8 @@ namespace BlastWhats
                         // --- KIRIM PESAN KE API NODE.JS ---
                         try
                         {
+                            //MessageBox.Show($"${targetPhoneNumber} {logMessage}");
+                            //logMessage += "Berhasil.";
                             var payload = new { number = targetPhoneNumber, message = finalMessage };
                             var content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json");
 
@@ -157,7 +159,7 @@ namespace BlastWhats
                             if (response.IsSuccessStatusCode)
                             {
                                 logMessage += "Berhasil.";
-                              
+
                                 status = "Berhasil"; // Update status
                             }
                             else
@@ -181,6 +183,15 @@ namespace BlastWhats
 
                         // Beri jeda singkat antar pesan untuk menghindari spam
                         await Task.Delay(500, cts.Token);
+                        if (sentCount % 10 == 0 && sentCount < totalMessages)
+                        {
+                            string pauseLog = $"Mengambil jeda 10 detik...";
+                            // Laporkan status jeda ke UI
+                            (progress as IProgress<(int, string)>).Report((sentCount, pauseLog));
+
+                            // Jeda selama 10 detik
+                            await Task.Delay(10000, cts.Token);
+                        }
                     }
                 }, cts.Token);
 

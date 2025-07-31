@@ -52,3 +52,4 @@ F:\ngodingc#\BlastWhats\BlastWhats\bin\Debug\net8.0-windows\runtimes\linux-x64\n
 F:\ngodingc#\BlastWhats\BlastWhats\bin\Debug\net8.0-windows\runtimes\osx-x64\native\SQLite.Interop.dll
 F:\ngodingc#\BlastWhats\BlastWhats\bin\Debug\net8.0-windows\runtimes\win-x64\native\SQLite.Interop.dll
 F:\ngodingc#\BlastWhats\BlastWhats\bin\Debug\net8.0-windows\runtimes\win-x86\native\SQLite.Interop.dll
+F:\ngodingc#\BlastWhats\BlastWhats\obj\Debug\net8.0-windows\BlastWhats.sourcelink.json
