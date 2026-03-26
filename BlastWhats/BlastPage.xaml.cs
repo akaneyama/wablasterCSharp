@@ -1,27 +1,17 @@
 ﻿using Microsoft.Win32;
-using OfficeOpenXml;
+using OfficeOpenXml; // Pastikan menggunakan EPPlus
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Net.Http;
-using System.Net.Http.Json;
 using System.Text.Json;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
-
-
 
 namespace BlastWhats
 {
@@ -30,14 +20,27 @@ namespace BlastWhats
     /// </summary>
     public partial class BlastPage : Page
     {
-        // DataTable sekarang menjadi milik halaman ini, bukan MainWindow
         private DataTable excelData;
+
+        // HttpClient sebaiknya static agar tidak menghabiskan socket (Best Practice)
         private static readonly HttpClient client = new HttpClient();
+
         public BlastPage()
         {
             InitializeComponent();
 
+            // [BARU] Wajib untuk EPPlus versi 5 ke atas agar tidak error saat membaca Excel
+            ExcelPackage.License.SetNonCommercialPersonal("Penggunaan Pribadi");
+
             DatabaseHelper.InitializeDatabase();
+        }
+
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            EndDatePicker.SelectedDate = DateTime.Now;
+            StartDatePicker.SelectedDate = DateTime.Now.AddDays(-7);
+
+            LoadAllLogs();
         }
 
         private void BtnUploadExcel_Click(object sender, RoutedEventArgs e)
@@ -58,7 +61,6 @@ namespace BlastWhats
                     this.excelData = ReadExcelToDataTable(filePath);
                     ExcelDataGrid.ItemsSource = this.excelData.DefaultView;
 
-                    // Langsung perbarui daftar variabel setelah upload berhasil
                     UpdateVariableList();
                 }
                 catch (Exception ex)
@@ -83,28 +85,62 @@ namespace BlastWhats
 
             VariablesListBox.ItemsSource = formattedVariableNames;
             PhoneNumberColumnComboBox.ItemsSource = rawColumnNames;
+
+            // Otomatis pilih item pertama jika ada
+            if (rawColumnNames.Count > 0)
+                PhoneNumberColumnComboBox.SelectedIndex = 0;
         }
-        private void LoadLogs()
+
+        private void LoadAllLogs()
         {
             LogDataGrid.ItemsSource = DatabaseHelper.GetLogs().DefaultView;
         }
 
-        // Event handler untuk tombol refresh
         private void BtnRefreshLogs_Click(object sender, RoutedEventArgs e)
         {
-            LoadLogs();
+            LoadAllLogs();
         }
+
+        private void BtnFilter_Click(object sender, RoutedEventArgs e)
+        {
+            if (StartDatePicker.SelectedDate == null || EndDatePicker.SelectedDate == null)
+            {
+                MessageBox.Show("Silakan pilih tanggal mulai dan tanggal akhir.", "Peringatan", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            DateTime startDate = StartDatePicker.SelectedDate.Value;
+            DateTime endDate = EndDatePicker.SelectedDate.Value;
+
+            if (startDate > endDate)
+            {
+                MessageBox.Show("Tanggal mulai tidak boleh lebih besar dari tanggal akhir.", "Peringatan", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            LogDataGrid.ItemsSource = DatabaseHelper.GetLogsByDate(startDate, endDate).DefaultView;
+        }
+
         private async void BtnStartBlast_Click(object sender, RoutedEventArgs e)
         {
-            if (this.excelData == null || this.excelData.Rows.Count == 0) { /* ... validasi ... */ return; }
-            if (PhoneNumberColumnComboBox.SelectedItem == null) { /* ... validasi ... */ return; }
+            // [BARU] Lengkapi validasi
+            if (this.excelData == null || this.excelData.Rows.Count == 0)
+            {
+                MessageBox.Show("Silakan unggah file Excel yang berisi data terlebih dahulu.", "Peringatan", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+            if (PhoneNumberColumnComboBox.SelectedItem == null)
+            {
+                MessageBox.Show("Silakan pilih kolom mana yang berisi Nomor WA.", "Peringatan", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
 
             var cts = new CancellationTokenSource();
             var progressWindow = new ProgressWindow();
             var mainWindow = (MainWindow)Application.Current.MainWindow;
 
-            // Definisikan Progress<T> dengan tipe data baru untuk log
-            var progress = new Progress<(int count, string log)>(update =>
+            // [BARU] Cast IProgress di awal agar penulisan di bawah lebih bersih
+            IProgress<(int count, string log)> progressReporter = new Progress<(int count, string log)>(update =>
             {
                 progressWindow.UpdateProgress(update.count, this.excelData.Rows.Count, update.log);
             });
@@ -119,83 +155,99 @@ namespace BlastWhats
                 string phoneNumberColumnName = PhoneNumberColumnComboBox.SelectedItem.ToString();
                 int totalMessages = this.excelData.Rows.Count;
 
+                // [BARU] Ambil nama-nama kolom ke dalam List untuk menghindari cross-thread exception di dalam Task.Run
+                var columnNames = this.excelData.Columns.Cast<DataColumn>().Select(c => c.ColumnName).ToList();
+
+                // [BARU] Ekstrak data baris menjadi list kamus (dictionary) agar aman dibaca di background thread
+                var rowsData = new List<Dictionary<string, string>>();
+                foreach (DataRow row in this.excelData.Rows)
+                {
+                    var rowDict = new Dictionary<string, string>();
+                    foreach (var col in columnNames)
+                    {
+                        rowDict[col] = row[col]?.ToString() ?? "";
+                    }
+                    rowsData.Add(rowDict);
+                }
+
                 await Task.Run(async () =>
                 {
                     int sentCount = 0;
-                    foreach (DataRow row in this.excelData.Rows)
+
+                    foreach (var rowDict in rowsData)
                     {
                         cts.Token.ThrowIfCancellationRequested();
-                        string targetPhoneNumber = row[phoneNumberColumnName]?.ToString();
+
+                        string targetPhoneNumber = rowDict.ContainsKey(phoneNumberColumnName) ? rowDict[phoneNumberColumnName] : "";
                         string logMessage = $"Mengirim ke {targetPhoneNumber}... ";
-                        string status = "Gagal"; // Default status
+                        string status = "Gagal";
                         string details = "";
-                       
 
                         if (string.IsNullOrWhiteSpace(targetPhoneNumber))
                         {
                             logMessage += "Nomor kosong, dilewati.";
-                            (progress as IProgress<(int, string)>).Report((sentCount, logMessage));
+                            progressReporter.Report((sentCount, logMessage));
                             continue;
                         }
 
+                        // Replace variabel pesan
                         string finalMessage = messageTemplate;
-                        foreach (DataColumn col in this.excelData.Columns)
+                        foreach (var colName in columnNames)
                         {
-                            string placeholder = $"{{{col.ColumnName}}}";
-                            string value = row[col.ColumnName]?.ToString() ?? "";
+                            string placeholder = $"{{{colName}}}";
+                            string value = rowDict[colName];
                             finalMessage = finalMessage.Replace(placeholder, value, StringComparison.OrdinalIgnoreCase);
                         }
 
                         // --- KIRIM PESAN KE API NODE.JS ---
                         try
                         {
-                            //MessageBox.Show($"${targetPhoneNumber} {logMessage}");
-                            //logMessage += "Berhasil.";
                             var payload = new { number = targetPhoneNumber, message = finalMessage };
                             var content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json");
 
-                            var response = await client.PostAsync("http://localhost:3000/send", content, cts.Token);
+                            // [BARU] Gunakan 'using' agar memory response langsung dihapus setelah dipakai
+                            using var response = await client.PostAsync("http://localhost:3000/send", content, cts.Token);
 
                             if (response.IsSuccessStatusCode)
                             {
                                 logMessage += "Berhasil.";
-
-                                status = "Berhasil"; // Update status
+                                status = "Berhasil";
                             }
                             else
                             {
-                                // Baca pesan error dari server jika ada
                                 string errorMsg = await response.Content.ReadAsStringAsync();
                                 logMessage += $"Gagal ({response.StatusCode}): {errorMsg}";
+                                details = errorMsg; // Simpan ke detail database
                             }
                         }
                         catch (Exception ex)
                         {
-                            logMessage += $"Error: {ex.Message}";
+                            logMessage += $"Error API: {ex.Message}";
+                            details = ex.Message;
                         }
                         // ------------------------------------
 
-
                         DatabaseHelper.AddLog(targetPhoneNumber, finalMessage, status, details);
-                       
-                        sentCount++;
-                        (progress as IProgress<(int, string)>).Report((sentCount, logMessage));
 
-                        // Beri jeda singkat antar pesan untuk menghindari spam
+                        sentCount++;
+                        progressReporter.Report((sentCount, logMessage));
+
+                        // Beri jeda 500ms agar aman dari blokir WA
                         await Task.Delay(500, cts.Token);
+
+                        // Jeda panjang setiap 10 pesan
                         if (sentCount % 10 == 0 && sentCount < totalMessages)
                         {
-                            string pauseLog = $"Mengambil jeda 10 detik...";
-                            // Laporkan status jeda ke UI
-                            (progress as IProgress<(int, string)>).Report((sentCount, pauseLog));
-
-                            // Jeda selama 10 detik
+                            progressReporter.Report((sentCount, "Mengambil jeda 10 detik untuk keamanan..."));
                             await Task.Delay(10000, cts.Token);
                         }
                     }
                 }, cts.Token);
 
                 MessageBox.Show("Proses pengiriman selesai.", "Selesai", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                // Segarkan log otomatis setelah pengiriman selesai
+                LoadAllLogs();
             }
             catch (OperationCanceledException)
             {
@@ -211,63 +263,41 @@ namespace BlastWhats
                 mainWindow?.SetUiEnabled(true);
             }
         }
-        private void Page_Loaded(object sender, RoutedEventArgs e)
-        {
-            // Set tanggal default untuk DatePicker
-            EndDatePicker.SelectedDate = DateTime.Now;
-            StartDatePicker.SelectedDate = DateTime.Now.AddDays(-7); // Contoh: 7 hari terakhir
 
-            // Langsung muat log saat halaman ditampilkan
-            LoadAllLogs();
-        }
-        private void LoadAllLogs()
-        {
-            LogDataGrid.ItemsSource = DatabaseHelper.GetLogs().DefaultView;
-        }
-        private void BtnFilter_Click(object sender, RoutedEventArgs e)
-        {
-            // Validasi input tanggal
-            if (StartDatePicker.SelectedDate == null || EndDatePicker.SelectedDate == null)
-            {
-                MessageBox.Show("Silakan pilih tanggal mulai dan tanggal akhir.", "Peringatan");
-                return;
-            }
-
-            DateTime startDate = StartDatePicker.SelectedDate.Value;
-            DateTime endDate = EndDatePicker.SelectedDate.Value;
-
-            if (startDate > endDate)
-            {
-                MessageBox.Show("Tanggal mulai tidak boleh lebih besar dari tanggal akhir.", "Peringatan");
-                return;
-            }
-
-            // Panggil method database yang baru dengan tanggal yang dipilih
-            LogDataGrid.ItemsSource = DatabaseHelper.GetLogsByDate(startDate, endDate).DefaultView;
-        }
         private DataTable ReadExcelToDataTable(string filePath)
         {
             DataTable dt = new DataTable();
-            int headerRow = 2; // Tentukan baris header
-            int startDataRow = 3; // Tentukan baris pertama data
+            int headerRow = 2; // Baris header
+            int startDataRow = 3; // Baris data
 
             using (var package = new ExcelPackage(new FileInfo(filePath)))
             {
                 ExcelWorksheet worksheet = package.Workbook.Worksheets.FirstOrDefault();
                 if (worksheet == null) return dt;
 
-                foreach (var headerCell in worksheet.Cells[headerRow, 1, headerRow, worksheet.Dimension.End.Column])
+                // Membaca Header
+                for (int col = 1; col <= worksheet.Dimension.End.Column; col++)
                 {
-                    dt.Columns.Add(headerCell.Text);
+                    string headerText = worksheet.Cells[headerRow, col].Text;
+                    // Beri nama default jika header kosong agar tidak error
+                    if (string.IsNullOrWhiteSpace(headerText)) headerText = $"Column{col}";
+
+                    // Pastikan nama kolom unik
+                    while (dt.Columns.Contains(headerText))
+                    {
+                        headerText += "_1";
+                    }
+
+                    dt.Columns.Add(headerText);
                 }
 
+                // Membaca Data
                 for (int rowNum = startDataRow; rowNum <= worksheet.Dimension.End.Row; rowNum++)
                 {
-                    var wsRow = worksheet.Cells[rowNum, 1, rowNum, dt.Columns.Count];
                     DataRow row = dt.Rows.Add();
-                    foreach (var cell in wsRow)
+                    for (int col = 1; col <= dt.Columns.Count; col++)
                     {
-                        row[cell.Start.Column - 1] = cell.Text;
+                        row[col - 1] = worksheet.Cells[rowNum, col].Text;
                     }
                 }
             }

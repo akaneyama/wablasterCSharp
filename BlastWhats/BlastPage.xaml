@@ -5,18 +5,17 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:BlastWhats"
       mc:Ignorable="d" 
-      d:DesignHeight="1600" d:DesignWidth="800"
+      d:DesignHeight="800" d:DesignWidth="1200"
       Title="BlastPage" Loaded="Page_Loaded"
       Background="#F0F2F5">
-
     <Page.Resources>
         <Style x:Key="CardBorderStyle" TargetType="Border">
             <Setter Property="Background" Value="White"/>
-            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="CornerRadius" Value="12"/>
             <Setter Property="Padding" Value="20"/>
             <Setter Property="Effect">
                 <Setter.Value>
-                    <DropShadowEffect ShadowDepth="1" Color="#E0E0E0" Opacity="0.8" BlurRadius="10"/>
+                    <DropShadowEffect ShadowDepth="2" Color="#D1D5DB" Opacity="0.5" BlurRadius="12"/>
                 </Setter.Value>
             </Setter>
         </Style>
@@ -25,125 +24,182 @@
             <Setter Property="FontSize" Value="18"/>
             <Setter Property="FontWeight" Value="Bold"/>
             <Setter Property="Foreground" Value="#128C7E"/>
-            <Setter Property="Margin" Value="0,0,0,10"/>
+            <Setter Property="Margin" Value="0,0,0,15"/>
         </Style>
 
         <Style x:Key="LabelStyle" TargetType="TextBlock">
             <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Margin" Value="0,0,0,5"/>
-            <Setter Property="Foreground" Value="#333"/>
+            <Setter Property="Margin" Value="0,0,0,8"/>
+            <Setter Property="Foreground" Value="#444444"/>
+            <Setter Property="FontSize" Value="13"/>
+        </Style>
+
+        <Style x:Key="ActionButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#25D366"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="Padding" Value="10"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
     </Page.Resources>
 
-    <Grid Margin="15" >
+    <Grid Margin="20">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="2*" MinWidth="400"/>
-            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="4*" MinWidth="350"/>
+            <ColumnDefinition Width="6*" MinWidth="500"/>
         </Grid.ColumnDefinitions>
 
+        <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto" Padding="0,0,15,0">
+            <StackPanel>
 
-        <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto" Padding="10">
-        <StackPanel Grid.Column="0" Margin="0,0,15,0">
+                <Border Style="{StaticResource CardBorderStyle}" Margin="0,0,0,20">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource CardTitleStyle}" Text="📁 1. Unggah Data Excel"/>
+                        <TextBlock Text="Pilih file Excel (.xlsx) yang berisi nomor WA dan data penerima." 
+                                   Foreground="#666" FontSize="13" Margin="0,0,0,10" TextWrapping="Wrap"/>
 
-            <Border Style="{StaticResource CardBorderStyle}" Margin="0,0,0,15">
-                <StackPanel>
-                    <TextBlock Style="{StaticResource CardTitleStyle}" Text="1. Unggah Data"/>
-                    <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
-                        <Button x:Name="BtnUploadExcel" Content="Pilih File Excel" Click="BtnUploadExcel_Click" Width="150" Margin="10,0,0,0" Style="{StaticResource MenuButtonStyle}" />
-                        <TextBlock x:Name="FilePathText" VerticalAlignment="Center" Margin="15,0,0,0" Foreground="#555" Text="Belum ada file." TextTrimming="CharacterEllipsis"/>
+                        <StackPanel Orientation="Horizontal">
+                            <Button x:Name="BtnUploadExcel" Content="Pilih File Excel" Click="BtnUploadExcel_Click" 
+                                    Width="130" Height="35" Style="{StaticResource MenuButtonStyle}" />
+                            <TextBlock x:Name="FilePathText" VerticalAlignment="Center" Margin="15,0,0,0" 
+                                       Foreground="#555" Text="Belum ada file." TextTrimming="CharacterEllipsis" 
+                                       FontStyle="Italic" MaxWidth="200"/>
+                        </StackPanel>
                     </StackPanel>
-                </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource CardBorderStyle}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource CardTitleStyle}" Text="✍️ 2. Atur Pesan &amp; Pengiriman"/>
+
+                        <TextBlock Text="Isi Pesan:" Style="{StaticResource LabelStyle}"/>
+                        <Border BorderBrush="#CCCCCC" BorderThickness="1" CornerRadius="6" Background="#FAFAFA" Margin="0,0,0,15">
+                            <TextBox x:Name="MessageTextBox" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap"
+                                     BorderThickness="0" Background="Transparent" Padding="10" FontSize="14" Height="150"
+                                     Text="Halo {Nama}, ini adalah pesan tes untuk nomor {Nomor WA}."/>
+                        </Border>
+
+                        <Grid Margin="0,0,0,20">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="15"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Variabel Tersedia:" Style="{StaticResource LabelStyle}"/>
+                                <Border BorderBrush="#DDDDDD" BorderThickness="1" CornerRadius="6" Background="#FAFAFA" Height="90">
+                                    <ListBox x:Name="VariablesListBox" Margin="2" Background="Transparent" BorderThickness="0" 
+                                             ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+                                </Border>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="Pilih Kolom Nomor WA:" Style="{StaticResource LabelStyle}"/>
+                                <ComboBox x:Name="PhoneNumberColumnComboBox" Padding="8,6" Height="34" VerticalContentAlignment="Center" Background="White"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <Button x:Name="BtnStartBlast" Content="🚀 Mulai Blast WA" Click="BtnStartBlast_Click" 
+                                Style="{StaticResource ActionButtonStyle}" HorizontalAlignment="Stretch" Height="45"/>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="5*"/>
+                <RowDefinition Height="15"/>
+                <RowDefinition Height="5*"/>
+            </Grid.RowDefinitions>
+
+            <Border Grid.Row="0" Style="{StaticResource CardBorderStyle}" Padding="0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Style="{StaticResource CardTitleStyle}" Text="📊 3. Pratinjau Data" Margin="20,20,20,10"/>
+
+                    <DataGrid Grid.Row="1" x:Name="ExcelDataGrid" AutoGenerateColumns="True" IsReadOnly="True" CanUserAddRows="False"
+                              HorizontalGridLinesBrush="#EEEEEE" VerticalGridLinesBrush="#EEEEEE" Background="White"
+                              BorderThickness="0" RowHeight="30" AlternatingRowBackground="#F9F9F9">
+                        <DataGrid.Resources>
+                            <Style TargetType="DataGridColumnHeader">
+                                <Setter Property="Background" Value="#128C7E"/>
+                                <Setter Property="Foreground" Value="White"/>
+                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                <Setter Property="Padding" Value="10,8"/>
+                                <Setter Property="BorderThickness" Value="0,0,1,0"/>
+                                <Setter Property="BorderBrush" Value="#075E54"/>
+                            </Style>
+                        </DataGrid.Resources>
+                    </DataGrid>
+                </Grid>
             </Border>
-            
 
-            <Border Style="{StaticResource CardBorderStyle}" Margin="0,0,0,15">
-                <StackPanel>
-                    <TextBlock Style="{StaticResource CardTitleStyle}" Text="2. Atur Pesan &amp; Pengiriman"/>
-
-                    <TextBlock Text="Isi Pesan:" Style="{StaticResource LabelStyle}"/>
-                    <TextBox x:Name="MessageTextBox" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap"
-                             BorderBrush="#CCC" BorderThickness="1" Padding="10" FontSize="14" Height="150"
-                             Text="Halo {Nama}, ini adalah pesan tes untuk nomor {Nomor WA}."/>
-
-                    <Grid Margin="0,15,0,0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-
-                        <StackPanel Grid.Column="0" Margin="0,0,5,0">
-                            <TextBlock Text="Variabel Tersedia:" Style="{StaticResource LabelStyle}"/>
-                            <Border BorderBrush="#DDD" BorderThickness="1" CornerRadius="3" Background="White" Height="80">
-                                <ListBox x:Name="VariablesListBox" Margin="5" Background="Transparent" BorderThickness="0"/>
-                            </Border>
-                        </StackPanel>
-
-                        <StackPanel Grid.Column="1" Margin="5,0,0,0">
-                            <TextBlock Text="Kolom Nomor WA:" Style="{StaticResource LabelStyle}"/>
-                            <ComboBox x:Name="PhoneNumberColumnComboBox" Padding="5" Height="30" VerticalContentAlignment="Center"/>
-                        </StackPanel>
-                    </Grid>
-
-                    <Button x:Name="BtnStartBlast" Content="Mulai Blast WA" Click="BtnStartBlast_Click" Style="{StaticResource MenuButtonStyle}" Margin="0,20,0,0" HorizontalAlignment="Stretch"/>
-                </StackPanel>
-            </Border>
-            <Border Grid.Column="2" Style="{StaticResource CardBorderStyle}">
+            <Border Grid.Row="2" Style="{StaticResource CardBorderStyle}" Padding="0">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <TextBlock Grid.Row="0" Style="{StaticResource CardTitleStyle}" Text="Log Pengiriman" Margin="0,10,0,105" Grid.RowSpan="2"/>
-                    <StackPanel Grid.Row="1" Margin="0,40,0,10">
-                        <TextBlock Text="Filter dari tanggal:" Style="{StaticResource LabelStyle}"/>
-                        <DatePicker x:Name="StartDatePicker" Margin="0,0,0,5"/>
-                        <TextBlock Text="Sampai tanggal:" Style="{StaticResource LabelStyle}"/>
-                        <DatePicker x:Name="EndDatePicker"/>
-                    </StackPanel>
 
-                    <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,15,0,10">
-                        <Button x:Name="BtnFilter" Content="🔍 Filter" Click="BtnFilter_Click" Width="100"/>
-                        <Button x:Name="BtnRefreshLogs" Content="🔄 Tampilkan Semua" Click="BtnRefreshLogs_Click" Margin="5,0,0,0"/>
-                    </StackPanel>
+                    <TextBlock Grid.Row="0" Style="{StaticResource CardTitleStyle}" Text="📜 4. Log Pengiriman" Margin="20,20,20,5"/>
 
-                    <DataGrid Grid.Row="3" Margin="0,20,0,0" x:Name="LogDataGrid" AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False"  ScrollViewer.VerticalScrollBarVisibility="Auto"
-              ScrollViewer.HorizontalScrollBarVisibility="Auto" MaxHeight="150">
+                    <Border Grid.Row="1" Background="#F8F9FA" BorderBrush="#EEEEEE" BorderThickness="0,1,0,1" Padding="20,10">
+                        <WrapPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock Text="Dari:" Style="{StaticResource LabelStyle}" Margin="0,0,5,0" VerticalAlignment="Center"/>
+                            <DatePicker x:Name="StartDatePicker" Width="110" Height="28" Margin="0,0,15,0"/>
+
+                            <TextBlock Text="Sampai:" Style="{StaticResource LabelStyle}" Margin="0,0,5,0" VerticalAlignment="Center"/>
+                            <DatePicker x:Name="EndDatePicker" Width="110" Height="28" Margin="0,0,15,0"/>
+
+                            <Button x:Name="BtnFilter" Content="🔍 Filter" Click="BtnFilter_Click" 
+                                    Width="80" Height="28" Background="#E0E0E0" BorderThickness="0" Cursor="Hand" Margin="0,0,8,0"/>
+                            <Button x:Name="BtnRefreshLogs" Content="🔄 Tampilkan Semua" Click="BtnRefreshLogs_Click" 
+                                    Height="28" Padding="10,0" Background="#E0E0E0" BorderThickness="0" Cursor="Hand"/>
+                        </WrapPanel>
+                    </Border>
+
+                    <DataGrid Grid.Row="2" x:Name="LogDataGrid" AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False" 
+                              ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                              HorizontalGridLinesBrush="#EEEEEE" VerticalGridLinesBrush="Transparent" Background="White"
+                              BorderThickness="0" RowHeight="30" AlternatingRowBackground="#F9F9F9">
+                        <DataGrid.Resources>
+                            <Style TargetType="DataGridColumnHeader">
+                                <Setter Property="Background" Value="#075E54"/>
+                                <Setter Property="Foreground" Value="White"/>
+                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                <Setter Property="Padding" Value="10,8"/>
+                                <Setter Property="BorderThickness" Value="0,0,1,0"/>
+                                <Setter Property="BorderBrush" Value="#033A34"/>
+                            </Style>
+                        </DataGrid.Resources>
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Waktu" Binding="{Binding Timestamp, StringFormat='HH:mm:ss dd/MM/yy'}" Width="*"/>
-                            <DataGridTextColumn Header="Nomor" Binding="{Binding RecipientNumber}" Width="*"/>
-                            <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="*"/>
+                            <DataGridTextColumn Header="Waktu" Binding="{Binding Timestamp, StringFormat='dd/MM/yy HH:mm'}" Width="120"/>
+                            <DataGridTextColumn Header="Nomor WA" Binding="{Binding RecipientNumber}" Width="150"/>
+                            <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="100"/>
+                            <DataGridTextColumn Header="Pesan Terkirim" Binding="{Binding Message}" Width="*"/>
                         </DataGrid.Columns>
                     </DataGrid>
                 </Grid>
             </Border>
-        </StackPanel>
 
-        </ScrollViewer>
-        
-        <Border Grid.Column="1" Style="{StaticResource CardBorderStyle}">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0" Style="{StaticResource CardTitleStyle}" Text="3. Pratinjau Data"/>
-                <DataGrid Grid.Row="1" Margin="0,10,0,0" x:Name="ExcelDataGrid" AutoGenerateColumns="True" IsReadOnly="True" CanUserAddRows="False"
-                          HorizontalGridLinesBrush="#DDD" VerticalGridLinesBrush="#DDD" Background="White"
-                          BorderBrush="#CCC" BorderThickness="1">
-                    <DataGrid.Resources>
-                        <Style TargetType="DataGridColumnHeader">
-                            <Setter Property="Background" Value="#075E54"/>
-                            <Setter Property="Foreground" Value="White"/>
-                            <Setter Property="FontWeight" Value="Bold"/>
-                            <Setter Property="Padding" Value="10,5"/>
-                        </Style>
-                    </DataGrid.Resources>
-                </DataGrid>
-            </Grid>
-        </Border>
-        
+        </Grid>
     </Grid>
-
 </Page>

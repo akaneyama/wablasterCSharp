@@ -10,11 +10,7 @@
         "dependencies": {
           "EPPlus.Interfaces": "8.0.0",
           "Microsoft.Extensions.Configuration.Json": "8.0.1",
-          "Microsoft.IO.RecyclableMemoryStream": "3.0.1",
-          "System.ComponentModel.Annotations": "5.0.0",
-          "System.Security.Cryptography.Pkcs": "8.0.1",
-          "System.Security.Cryptography.Xml": "8.0.2",
-          "System.Text.Encoding.CodePages": "8.0.0"
+          "Microsoft.IO.RecyclableMemoryStream": "3.0.1"
         },
         "runtime": {
           "lib/net8.0/EPPlus.dll": {
@@ -204,60 +200,9 @@
           }
         }
       },
-      "System.ComponentModel.Annotations/5.0.0": {
-        "runtime": {
-          "lib/netstandard2.1/System.ComponentModel.Annotations.dll": {
-            "assemblyVersion": "5.0.0.0",
-            "fileVersion": "5.0.20.51904"
-          }
-        }
-      },
       "System.Data.SQLite.Core/1.0.119": {
         "dependencies": {
           "Stub.System.Data.SQLite.Core.NetStandard": "1.0.119"
-        }
-      },
-      "System.Security.Cryptography.Pkcs/8.0.1": {
-        "runtime": {
-          "lib/net8.0/System.Security.Cryptography.Pkcs.dll": {
-            "assemblyVersion": "8.0.0.0",
-            "fileVersion": "8.0.1024.46610"
-          }
-        },
-        "runtimeTargets": {
-          "runtimes/win/lib/net8.0/System.Security.Cryptography.Pkcs.dll": {
-            "rid": "win",
-            "assetType": "runtime",
-            "assemblyVersion": "8.0.0.0",
-            "fileVersion": "8.0.1024.46610"
-          }
-        }
-      },
-      "System.Security.Cryptography.Xml/8.0.2": {
-        "dependencies": {
-          "System.Security.Cryptography.Pkcs": "8.0.1"
-        },
-        "runtime": {
-          "lib/net8.0/System.Security.Cryptography.Xml.dll": {
-            "assemblyVersion": "8.0.0.0",
-            "fileVersion": "8.0.1024.46610"
-          }
-        }
-      },
-      "System.Text.Encoding.CodePages/8.0.0": {
-        "runtime": {
-          "lib/net8.0/System.Text.Encoding.CodePages.dll": {
-            "assemblyVersion": "8.0.0.0",
-            "fileVersion": "8.0.23.53103"
-          }
-        },
-        "runtimeTargets": {
-          "runtimes/win/lib/net8.0/System.Text.Encoding.CodePages.dll": {
-            "rid": "win",
-            "assetType": "runtime",
-            "assemblyVersion": "8.0.0.0",
-            "fileVersion": "8.0.23.53103"
-          }
         }
       }
     }
@@ -368,40 +313,12 @@
       "path": "stub.system.data.sqlite.core.netstandard/1.0.119",
       "hashPath": "stub.system.data.sqlite.core.netstandard.1.0.119.nupkg.sha512"
     },
-    "System.ComponentModel.Annotations/5.0.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-dMkqfy2el8A8/I76n2Hi1oBFEbG1SfxD2l5nhwXV3XjlnOmwxJlQbYpJH4W51odnU9sARCSAgv7S3CyAFMkpYg==",
-      "path": "system.componentmodel.annotations/5.0.0",
-      "hashPath": "system.componentmodel.annotations.5.0.0.nupkg.sha512"
-    },
     "System.Data.SQLite.Core/1.0.119": {
       "type": "package",
       "serviceable": true,
       "sha512": "sha512-bhQB8HVtRA+OOYw8UTD1F1kU+nGJ0/OZvH1JmlVUI4bGvgVEWeX1NcHjA765NvUoRVuCPlt8PrEpZ1thSsk1jg==",
       "path": "system.data.sqlite.core/1.0.119",
       "hashPath": "system.data.sqlite.core.1.0.119.nupkg.sha512"
-    },
-    "System.Security.Cryptography.Pkcs/8.0.1": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-CoCRHFym33aUSf/NtWSVSZa99dkd0Hm7OCZUxORBjRB16LNhIEOf8THPqzIYlvKM0nNDAPTRBa1FxEECrgaxxA==",
-      "path": "system.security.cryptography.pkcs/8.0.1",
-      "hashPath": "system.security.cryptography.pkcs.8.0.1.nupkg.sha512"
-    },
-    "System.Security.Cryptography.Xml/8.0.2": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-aDM/wm0ZGEZ6ZYJLzgqjp2FZdHbDHh6/OmpGfb7AdZ105zYmPn/83JRU2xLIbwgoNz9U1SLUTJN0v5th3qmvjA==",
-      "path": "system.security.cryptography.xml/8.0.2",
-      "hashPath": "system.security.cryptography.xml.8.0.2.nupkg.sha512"
-    },
-    "System.Text.Encoding.CodePages/8.0.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-OZIsVplFGaVY90G2SbpgU7EnCoOO5pw1t4ic21dBF3/1omrJFpAGoNAVpPyMVOC90/hvgkGG3VFqR13YgZMQfg==",
-      "path": "system.text.encoding.codepages/8.0.0",
-      "hashPath": "system.text.encoding.codepages.8.0.0.nupkg.sha512"
     }
   }
 }

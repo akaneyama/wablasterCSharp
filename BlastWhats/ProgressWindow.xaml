@@ -5,13 +5,52 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BlastWhats"
         mc:Ignorable="d"
-        Title="ProgressWindow" Height="200" Width="800" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" WindowStyle="None" ShowInTaskbar="False">
-    <Grid Margin="20">
-        <StackPanel VerticalAlignment="Center">
-            <TextBlock x:Name="StatusTextBlock" Text="Mempersiapkan pengiriman..." FontSize="14" HorizontalAlignment="Center"/>
-            <ProgressBar x:Name="MainProgressBar" Height="25" Margin="0,10,0,0"/>
+        Title="ProgressWindow" Height="220" Width="450" 
+        ResizeMode="NoResize" WindowStartupLocation="CenterScreen" 
+        WindowStyle="None" AllowsTransparency="True" Background="Transparent"
+        Topmost="True" ShowInTaskbar="False">
 
-            <Button x:Name="CancelButton" Content="Batal" Width="100" HorizontalAlignment="Center" Margin="0,15,0,0" Click="CancelButton_Click"/>
-        </StackPanel>
-    </Grid>
+    <Border Background="White" CornerRadius="12" Margin="15">
+        <Border.Effect>
+            <DropShadowEffect ShadowDepth="3" Color="#AAAAAA" Opacity="0.4" BlurRadius="12"/>
+        </Border.Effect>
+
+        <Grid Margin="25">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0" Text="🚀 Sedang Mengirim Pesan..." 
+                       FontSize="18" FontWeight="Bold" Foreground="#128C7E" 
+                       HorizontalAlignment="Center" Margin="0,0,0,15"/>
+
+            <StackPanel Grid.Row="1" VerticalAlignment="Center">
+                <TextBlock x:Name="StatusTextBlock" Text="Mempersiapkan pengiriman..." 
+                           FontSize="14" Foreground="#555555" HorizontalAlignment="Center" 
+                           TextWrapping="Wrap" TextAlignment="Center" Margin="0,0,0,10"/>
+
+                <ProgressBar x:Name="MainProgressBar" Height="18" 
+                             BorderThickness="0" Background="#EAEAEA" Foreground="#128C7E">
+                    <ProgressBar.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="4"/>
+                        </Style>
+                    </ProgressBar.Resources>
+                </ProgressBar>
+            </StackPanel>
+
+            <Button Grid.Row="2" x:Name="CancelButton" Content="Batal" 
+                    Width="120" Height="35" HorizontalAlignment="Center" Margin="0,20,0,0" 
+                    Click="CancelButton_Click" 
+                    Background="#E74C3C" Foreground="White" FontWeight="SemiBold" BorderThickness="0" Cursor="Hand">
+                <Button.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="6"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
+        </Grid>
+    </Border>
 </Window>

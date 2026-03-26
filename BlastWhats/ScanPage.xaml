@@ -5,52 +5,79 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:BlastWhats"
       mc:Ignorable="d" 
-      d:DesignHeight="500" d:DesignWidth="800"
+      d:DesignHeight="600" d:DesignWidth="800"
       Title="ScanPage"
-      Background="Transparent">
+      Background="#F0F2F5">
 
-    <Grid Margin="20">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+    <Page.Resources>
+        <Style x:Key="CardBorderStyle" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Padding" Value="40,30"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect ShadowDepth="2" Color="#D1D5DB" Opacity="0.6" BlurRadius="15"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
 
-        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,20">
-            <Button x:Name="BtnStartServer" Content="Pilih &amp; Mulai Server" 
-                    Click="BtnStartServer_Click" Margin="10,0,0,0" Style="{StaticResource MenuButtonStyle}" 
-                    Width="180"/>
-            <Button x:Name="BtnStopServer" Content="Hentikan Server" 
-                    Click="BtnStopServer_Click" Style="{StaticResource MenuButtonStyle}" 
-                    Width="180" Margin="10,0,0,0" Background="#E74C3C"/>
-        </StackPanel>
+        <Style x:Key="DangerButtonStyle" TargetType="Button" BasedOn="{StaticResource MenuButtonStyle}">
+            <Setter Property="Background" Value="#E74C3C"/>
+        </Style>
+    </Page.Resources>
 
-        <StackPanel Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center">
-            <TextBlock Text="Pindai QR Code WhatsApp" 
-                       FontSize="24" FontWeight="Bold" 
-                       TextAlignment="Center" Foreground="#333333" 
-                       Margin="0,0,0,20"/>
+    <Grid>
+        <Border Style="{StaticResource CardBorderStyle}" 
+                HorizontalAlignment="Center" 
+                VerticalAlignment="Center" 
+                MinWidth="450">
 
-            <Border BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" Background="White"
-                    Width="320" Height="320">
-                <Border.Effect>
-                    <DropShadowEffect ShadowDepth="2" Color="#CCCCCC" Opacity="0.4" BlurRadius="10"/>
-                </Border.Effect>
+            <StackPanel>
+                <TextBlock Text="Koneksi WhatsApp" 
+                           FontSize="26" FontWeight="Bold" 
+                           TextAlignment="Center" Foreground="#128C7E" 
+                           Margin="0,0,0,5"/>
 
-                <Grid>
-                    <TextBlock Text="Menunggu QR..." 
-                               HorizontalAlignment="Center" VerticalAlignment="Center" 
-                               FontSize="18" Foreground="#AAAAAA"/>
-                    <Image x:Name="QrCodeImage" Width="300" Height="300" 
-                           Stretch="Uniform"/>
-                </Grid>
-            </Border>
-        </StackPanel>
+                <TextBlock Text="1. Buka WhatsApp di HP Anda&#x0a;2. Ketuk Menu (⋮) dan pilih Perangkat Tertaut&#x0a;3. Arahkan kamera ke layar ini" 
+                           FontSize="14" Foreground="#555555" 
+                           TextAlignment="Center" LineHeight="22"
+                           Margin="0,0,0,25"/>
 
-        <TextBlock Grid.Row="2" x:Name="StatusText" 
-                   Text="Server belum aktif." 
-                   TextWrapping="Wrap" TextAlignment="Center" 
-                   Margin="0,20,0,10" FontSize="16" FontWeight="SemiBold" 
-                   Foreground="#555555" VerticalAlignment="Bottom"/>
+                <Border BorderBrush="#EAEAEA" BorderThickness="1" CornerRadius="8" 
+                        Background="White" Width="280" Height="280"
+                        HorizontalAlignment="Center">
+                    <Grid>
+                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock Text="📷" FontSize="40" TextAlignment="Center" Foreground="#CCCCCC" Margin="0,0,0,10"/>
+                            <TextBlock Text="Menunggu QR Code..." 
+                                       FontSize="16" Foreground="#AAAAAA" TextAlignment="Center"/>
+                        </StackPanel>
+
+                        <Image x:Name="QrCodeImage" Width="260" Height="260" Stretch="Uniform"/>
+                    </Grid>
+                </Border>
+
+                <Border Background="#F8F9FA" CornerRadius="6" Padding="15,10" Margin="0,25,0,25">
+                    <TextBlock x:Name="StatusText" 
+                               Text="Server belum aktif. Klik tombol di bawah untuk memulai." 
+                               TextWrapping="Wrap" TextAlignment="Center" 
+                               FontSize="14" FontWeight="SemiBold" 
+                               Foreground="#333333"/>
+                </Border>
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button x:Name="BtnStartServer" Content="🚀 Mulai / Restart Server" 
+                            Click="BtnStartServer_Click" 
+                            Style="{StaticResource MenuButtonStyle}" 
+                            Width="190" Height="40" FontSize="14"/>
+
+                    <Button x:Name="BtnStopServer" Content="🛑 Hentikan Server" 
+                            Click="BtnStopServer_Click" 
+                            Style="{StaticResource DangerButtonStyle}" 
+                            Width="160" Height="40" Margin="15,0,0,0" FontSize="14"/>
+                </StackPanel>
+
+            </StackPanel>
+        </Border>
     </Grid>
 </Page>

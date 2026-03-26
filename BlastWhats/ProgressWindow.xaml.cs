@@ -29,8 +29,17 @@ namespace BlastWhats
 
         public void UpdateProgress(int current, int total, string log)
         {
-            StatusTextBlock.Text = $"({current}/{total}) - {log}";
-            MainProgressBar.Value = (double)current / total * 100;
+            // [BARU] Cegah pembagian dengan angka 0
+            if (total > 0)
+            {
+                StatusTextBlock.Text = $"({current}/{total}) - {log}";
+                MainProgressBar.Value = (double)current / total * 100;
+            }
+            else
+            {
+                StatusTextBlock.Text = log;
+                MainProgressBar.Value = 100; // Langsung penuh jika tidak ada data
+            }
         }
 
         // 2. Buat method untuk event click tombol Batal
@@ -38,8 +47,25 @@ namespace BlastWhats
         {
             // Nonaktifkan tombol agar tidak bisa diklik berkali-kali
             CancelButton.IsEnabled = false;
+
+            // [BARU] Beri tahu pengguna bahwa sistem sedang memproses pembatalan
+            StatusTextBlock.Text = "Membatalkan proses...";
+
             // 3. Picu event CancelClicked
             CancelClicked?.Invoke(this, EventArgs.Empty);
+        }
+
+        // [BARU] 4. Tangani jika pengguna menekan tombol silang 'X' di pojok kanan atas
+        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+        {
+            // Jika tombol batal masih aktif (berarti proses belum selesai/dibatalkan)
+            if (CancelButton.IsEnabled)
+            {
+                e.Cancel = true; // Batalkan penutupan window secara paksa
+                CancelButton_Click(this, null); // Panggil fungsi batal secara otomatis
+            }
+
+            base.OnClosing(e);
         }
     }
 }

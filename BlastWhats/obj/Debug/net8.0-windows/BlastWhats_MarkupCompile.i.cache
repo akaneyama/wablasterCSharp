@@ -4,16 +4,16 @@
 winexe
 C#
 .cs
-F:\ngodingc#\BlastWhats\BlastWhats\obj\Debug\net8.0-windows\
+D:\CODE\c#\wablasterCSharp\BlastWhats\obj\Debug\net8.0-windows\
 BlastWhats
 none
 false
-TRACE;DEBUG;NET;NET8_0;NETCOREAPP
-F:\ngodingc#\BlastWhats\BlastWhats\App.xaml
+TRACE;DEBUG;NET;NET8_0;NETCOREAPP;WINDOWS;WINDOWS7_0;NET5_0_OR_GREATER;NET6_0_OR_GREATER;NET7_0_OR_GREATER;NET8_0_OR_GREATER;NETCOREAPP3_0_OR_GREATER;NETCOREAPP3_1_OR_GREATER;WINDOWS7_0_OR_GREATER
+D:\CODE\c#\wablasterCSharp\BlastWhats\App.xaml
 4-61345716
 
 1047838762
-221300909202
+221-1594848389
 BlastPage.xaml;MainWindow.xaml;ProgressWindow.xaml;ScanPage.xaml;
 
 True
