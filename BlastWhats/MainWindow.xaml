@@ -5,33 +5,57 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BlastWhats"
         mc:Ignorable="d"
-        Title="WA Blaster Kampoeng IT" Height="650" Width="950" 
+        Title="WA Blaster Kampoeng IT" Height="700" Width="1100" 
         WindowStartupLocation="CenterScreen"
         Background="#F0F2F5" WindowStyle="ThreeDBorderWindow" WindowState="Maximized">
 
     <Window.Resources>
         <Style x:Key="SideMenuButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="#EAEAEA"/>
-            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="Foreground" Value="#D1E8E2"/>
+            <Setter Property="FontSize" Value="16"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Margin" Value="10,5"/>
+            <Setter Property="Margin" Value="15,5"/>
             <Setter Property="Padding" Value="15,12"/>
             <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="HorizontalContentAlignment" Value="Left"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border x:Name="border" Background="{TemplateBinding Background}" CornerRadius="6" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="True">
-                            <ContentPresenter x:Name="contentPresenter" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        <Border x:Name="border" Background="{TemplateBinding Background}" CornerRadius="8" SnapsToDevicePixels="True">
+                            <ContentPresenter x:Name="contentPresenter" Focusable="False" 
+                                              HorizontalAlignment="Left" Margin="{TemplateBinding Padding}" 
+                                              VerticalAlignment="Center"/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="#34495E"/>
+                                <Setter TargetName="border" Property="Background" Value="#128C7E"/>
+                                <Setter Property="Foreground" Value="White"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="#2C3E50"/>
+                                <Setter TargetName="border" Property="Background" Value="#054C44"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ExitButtonStyle" TargetType="Button" BasedOn="{StaticResource SideMenuButtonStyle}">
+            <Setter Property="Foreground" Value="#FFD2D2"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="Transparent" CornerRadius="8" SnapsToDevicePixels="True">
+                            <ContentPresenter HorizontalAlignment="Left" Margin="{TemplateBinding Padding}" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#E74C3C"/>
+                                <Setter Property="Foreground" Value="White"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#C0392B"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -40,49 +64,62 @@
         </Style>
     </Window.Resources>
 
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="220"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
+    <Grid Margin="20">
+        <Border Background="White" CornerRadius="15">
+            <Border.Effect>
+                <DropShadowEffect ShadowDepth="4" Color="#C1C9D2" Opacity="0.5" BlurRadius="20"/>
+            </Border.Effect>
 
-        <Border Grid.Column="0" Background="#2C3E50" CornerRadius="10,0,0,10" Margin="5">
-            <DockPanel>
-                <StackPanel DockPanel.Dock="Top" Margin="10,20,10,30">
-                    <TextBlock Text="🚀 WA Blaster" Foreground="White" FontSize="22" FontWeight="Bold" HorizontalAlignment="Center"/>
-                    <TextBlock Text="v1.0" Foreground="#95A5A6" FontSize="12" HorizontalAlignment="Center"/>
-                </StackPanel>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="250"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
 
-                <StackPanel DockPanel.Dock="Bottom" Margin="0,0,0,5">
-                    <Button x:Name="keluarBlast" Click="ExitMenu_Click" Style="{StaticResource SideMenuButtonStyle}"
-                            Background="#E74C3C" HorizontalAlignment="Stretch">
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                            <TextBlock Text="🚪" Margin="0,0,12,0" VerticalAlignment="Center"/>
-                            <TextBlock Text="Keluar" VerticalAlignment="Center"/>
+                <Border Grid.Column="0" Background="#075E54" CornerRadius="15,0,0,15">
+                    <DockPanel>
+                        <StackPanel DockPanel.Dock="Top" Margin="0,30,0,20">
+                            <Border Width="60" Height="60" Background="#128C7E" CornerRadius="30" Margin="0,0,0,15">
+                                <TextBlock Text="🚀" FontSize="30" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="3,0,0,0"/>
+                            </Border>
+
+                            <TextBlock Text="WA Blaster" Foreground="White" FontSize="22" FontWeight="Bold" HorizontalAlignment="Center"/>
+                            <TextBlock Text="v1.1" Foreground="#A2D6C6" FontSize="13" HorizontalAlignment="Center" Margin="0,5,0,0"/>
+
+                            <Border Height="1" Background="#128C7E" Margin="25,25,25,10"/>
                         </StackPanel>
-                    </Button>
-                </StackPanel>
 
-                <StackPanel DockPanel.Dock="Top">
-                    <Button x:Name="BtnScan" Click="BtnScan_Click" Style="{StaticResource SideMenuButtonStyle}">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="📷" Margin="0,0,12,0" VerticalAlignment="Center"/>
-                            <TextBlock Text="Scan QR" VerticalAlignment="Center"/>
+                        <StackPanel DockPanel.Dock="Bottom" Margin="0,0,0,20">
+                            <Button x:Name="keluarBlast" Click="ExitMenu_Click" Style="{StaticResource ExitButtonStyle}">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="🚪" Margin="0,0,15,0" FontSize="18"/>
+                                    <TextBlock Text="Keluar Aplikasi" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
                         </StackPanel>
-                    </Button>
-                    <Button x:Name="BtnBlast" Click="BtnBlast_Click" Style="{StaticResource SideMenuButtonStyle}">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="✉️" Margin="0,0,12,0" VerticalAlignment="Center"/>
-                            <TextBlock Text="Kirim Pesan" VerticalAlignment="Center"/>
+
+                        <StackPanel DockPanel.Dock="Top">
+                            <Button x:Name="BtnScan" Click="BtnScan_Click" Style="{StaticResource SideMenuButtonStyle}">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="📱" Margin="0,0,15,0" FontSize="18"/>
+                                    <TextBlock Text="Koneksi WhatsApp" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+
+                            <Button x:Name="BtnBlast" Click="BtnBlast_Click" Style="{StaticResource SideMenuButtonStyle}">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="✉️" Margin="0,0,15,0" FontSize="18"/>
+                                    <TextBlock Text="Kirim Pesan (Blast)" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
                         </StackPanel>
-                    </Button>
-                </StackPanel>
+                    </DockPanel>
+                </Border>
 
-            </DockPanel>
-        </Border>
-
-        <Border Grid.Column="1" Background="White" Margin="0,5,5,5" CornerRadius="0,10,10,0">
-            <Frame x:Name="MainFrame" NavigationUIVisibility="Hidden"/>
+                <Border Grid.Column="1" CornerRadius="0,15,15,0">
+                    <Frame x:Name="MainFrame" NavigationUIVisibility="Hidden"/>
+                </Border>
+            </Grid>
         </Border>
     </Grid>
 </Window>

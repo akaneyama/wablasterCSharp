@@ -21,7 +21,7 @@ namespace BlastWhats
     {
         // 1. Deklarasikan sebuah event publik
         public event EventHandler CancelClicked;
-
+        public bool IsFinished { get; set; } = false;
         public ProgressWindow()
         {
             InitializeComponent();
@@ -59,10 +59,11 @@ namespace BlastWhats
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
             // Jika tombol batal masih aktif (berarti proses belum selesai/dibatalkan)
-            if (CancelButton.IsEnabled)
+            // [PERBAIKAN] Tambahkan pengecekan "!IsFinished"
+            if (CancelButton.IsEnabled && !IsFinished)
             {
-                e.Cancel = true; // Batalkan penutupan window secara paksa
-                CancelButton_Click(this, null); // Panggil fungsi batal secara otomatis
+                e.Cancel = true;
+                CancelButton_Click(this, null);
             }
 
             base.OnClosing(e);

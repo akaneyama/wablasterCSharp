@@ -24,7 +24,6 @@ namespace BlastWhats
 
         // HttpClient sebaiknya static agar tidak menghabiskan socket (Best Practice)
         private static readonly HttpClient client = new HttpClient();
-
         public BlastPage()
         {
             InitializeComponent();
@@ -173,7 +172,7 @@ namespace BlastWhats
                 await Task.Run(async () =>
                 {
                     int sentCount = 0;
-
+                    Random rnd = new Random();
                     foreach (var rowDict in rowsData)
                     {
                         cts.Token.ThrowIfCancellationRequested();
@@ -231,20 +230,21 @@ namespace BlastWhats
 
                         sentCount++;
                         progressReporter.Report((sentCount, logMessage));
-
+                        int delayAntarPesan = rnd.Next(3000, 4500);
                         // Beri jeda 500ms agar aman dari blokir WA
-                        await Task.Delay(500, cts.Token);
+                        await Task.Delay(delayAntarPesan, cts.Token);
 
                         // Jeda panjang setiap 10 pesan
                         if (sentCount % 10 == 0 && sentCount < totalMessages)
                         {
-                            progressReporter.Report((sentCount, "Mengambil jeda 10 detik untuk keamanan..."));
-                            await Task.Delay(10000, cts.Token);
+                            int delayBatch = rnd.Next(10000, 13000);
+                            progressReporter.Report((sentCount, $"Mengambil jeda {delayBatch / 1000} detik untuk keamanan..."));
+                            await Task.Delay(delayBatch, cts.Token);
                         }
                     }
                 }, cts.Token);
 
-                MessageBox.Show("Proses pengiriman selesai.", "Selesai", MessageBoxButton.OK, MessageBoxImage.Information);
+                //MessageBox.Show("Proses pengiriman selesai.", "Selesai", MessageBoxButton.OK, MessageBoxImage.Information);
 
                 // Segarkan log otomatis setelah pengiriman selesai
                 LoadAllLogs();
@@ -259,6 +259,7 @@ namespace BlastWhats
             }
             finally
             {
+                progressWindow.IsFinished = true;
                 progressWindow.Close();
                 mainWindow?.SetUiEnabled(true);
             }

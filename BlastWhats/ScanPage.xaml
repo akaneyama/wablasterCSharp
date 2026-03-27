@@ -74,8 +74,14 @@
                     <Button x:Name="BtnStopServer" Content="🛑 Hentikan Server" 
                             Click="BtnStopServer_Click" 
                             Style="{StaticResource DangerButtonStyle}" 
-                            Width="160" Height="40" Margin="15,0,0,0" FontSize="14"/>
+                            Width="160" Height="40" Margin="15,0,15,0" FontSize="14"/>
+
+                    <Button x:Name="BtnClearBailey" Content="🛑 Hapus Auth" 
+          Click="BtnClearBailey_Click" 
+          Style="{StaticResource DangerButtonStyle}" 
+          Width="160" Height="40" Margin="15,0,0,0" FontSize="14"/>
                 </StackPanel>
+                
 
             </StackPanel>
         </Border>
